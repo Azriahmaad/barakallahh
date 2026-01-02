@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8c4a8 50%, #d4a574 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            padding: clamp(1rem, 5vw, 3rem);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        /* SLIDE 1 - Opening */
+        .opening {
+            text-align: center;
+        }
+
+        .opening h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: #8b6f47;
+            margin-bottom: clamp(1rem, 3vw, 2rem);
+            text-shadow: 2px 2px 4px rgba(139, 111, 71, 0.2);
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        .opening p {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: #a0826d;
+            margin-bottom: clamp(2rem, 5vw, 3rem);
+            line-height: 1.8;
+            animation: fadeInUp 1.5s ease-out 0.3s backwards;
+        }
+
+        .tap-instruction {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: #c9a86a;
+            font-style: italic;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* SLIDE 2 - Cake */
+        .cake-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(2rem, 5vw, 3rem);
+            cursor: default;
+        }
+
+        .cake {
+            position: relative;
+            width: clamp(200px, 40vw, 300px);
+            height: clamp(250px, 50vw, 350px);
+        }
+
+        .cake-layer {
+            position: absolute;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(139, 111, 71, 0.3);
+        }
+
+        .layer-1 {
+            bottom: 0;
+            height: 40%;
+            background: linear-gradient(180deg, #f4d5b8 0%, #e8c4a8 100%);
+            border: 3px solid #d4a574;
+        }
+
+        .layer-2 {
+            bottom: 35%;
+            height: 35%;
+            width: 85%;
+            left: 7.5%;
+            background: linear-gradient(180deg, #f9e4d0 0%, #f4d5b8 100%);
+            border: 3px solid #d4a574;
+        }
+
+        .layer-3 {
+            bottom: 65%;
+            height: 30%;
+            width: 70%;
+            left: 15%;
+            background: linear-gradient(180deg, #fff5eb 0%, #f9e4d0 100%);
+            border: 3px solid #d4a574;
+        }
+
+        .candle-group {
+            position: absolute;
+            top: -10%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: clamp(15px, 3vw, 25px);
+        }
+
+        .candle {
+            width: clamp(8px, 2vw, 12px);
+            height: clamp(40px, 8vw, 60px);
+            background: linear-gradient(180deg, #fff 0%, #f9e4d0 50%, #c9a86a 100%);
+            border-radius: 3px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(139, 111, 71, 0.3);
+        }
+
+        .flame {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: radial-gradient(ellipse at center, #fff9e6 0%, #ffd700 30%, #ff8c00 60%, transparent 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flicker 0.3s ease-in-out infinite alternate;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .flame.blown {
+            opacity: 0;
+            transform: translateX(100px) translateY(-50px) scale(0.5);
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: translateX(-50%) scale(1, 1);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1.05, 0.95);
+            }
+        }
+
+        .blow-btn {
+            padding: clamp(12px, 3vw, 18px) clamp(30px, 6vw, 50px);
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-family: Georgia, serif;
+            background: linear-gradient(135deg, #d4a574 0%, #c9a86a 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(139, 111, 71, 0.4);
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .blow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 111, 71, 0.5);
+        }
+
+        .blow-btn:active {
+            transform: translateY(0);
+        }
+
+        /* SLIDE 3 - Gift */
+        .gift-scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(1.5rem, 4vw, 2.5rem);
+            cursor: default;
+        }
+
+        .gift-box {
+            width: clamp(150px, 30vw, 200px);
+            height: clamp(150px, 30vw, 200px);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.05);
+        }
+
+        .box-base {
+            width: 100%;
+            height: 75%;
+            background: linear-gradient(135deg, #d4a574 0%, #c9a86a 100%);
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            box-shadow: 0 8px 30px rgba(139, 111, 71, 0.4);
+        }
+
+        .box-lid {
+            width: 105%;
+            height: 30%;
+            background: linear-gradient(135deg, #e8c4a8 0%, #d4a574 100%);
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: -2.5%;
+            box-shadow: 0 4px 20px rgba(139, 111, 71, 0.3);
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .box-lid.opened {
+            transform: translateY(-100px) rotateX(45deg);
+            opacity: 0;
+        }
+
+        .ribbon-v,
+        .ribbon-h {
+            position: absolute;
+            background: linear-gradient(135deg, #fff5eb 0%, #f4d5b8 100%);
+            box-shadow: 0 2px 8px rgba(139, 111, 71, 0.2);
+        }
+
+        .ribbon-v {
+            width: 15%;
+            height: 100%;
+            left: 42.5%;
+            top: 0;
+        }
+
+        .ribbon-h {
+            width: 100%;
+            height: 15%;
+            top: 30%;
+            left: 0;
+        }
+
+        .bow {
+            width: 50px;
+            height: 50px;
+            background: #f4d5b8;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(139, 111, 71, 0.3);
+        }
+
+        .gift-instruction {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: #8b6f47;
+            font-style: italic;
+        }
+
+        .letter-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: clamp(300px, 90vw, 600px);
+            max-height: 85vh;
+            max-height: 85dvh;
+            background: linear-gradient(135deg, #fff9f0 0%, #fff5eb 100%);
+            border-radius: 15px;
+            padding: clamp(1.5rem, 5vw, 3rem);
+            box-shadow: 0 20px 60px rgba(139, 111, 71, 0.4);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 3px solid #e8c4a8;
+        }
+
+        .letter-container.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .letter-bouquet {
+            font-size: clamp(3rem, 8vw, 5rem);
+            text-align: center;
+            margin-bottom: clamp(1rem, 3vw, 2rem);
+        }
+
+        .letter-container h2 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            color: #8b6f47;
+            text-align: center;
+            margin-bottom: clamp(1.5rem, 4vw, 2rem);
+        }
+
+        .letter-container p {
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            color: #6b5643;
+            line-height: 1.8;
+            margin-bottom: clamp(1rem, 3vw, 1.5rem);
+            text-align: justify;
+        }
+
+        .letter-signature {
+            text-align: right;
+            font-style: italic;
+            margin-top: clamp(1.5rem, 4vw, 2rem);
+            color: #8b6f47;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* SLIDE 4 - Photo Gallery */
+        .gallery-container {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            cursor: default;
+            margin-top: 700px;
+        }
+
+        .gallery-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: #8b6f47;
+            margin-bottom: clamp(2rem, 5vw, 3rem);
+            text-shadow: 2px 2px 4px rgba(139, 111, 71, 0.2);
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 40vw, 300px), 1fr));
+            gap: clamp(1rem, 3vw, 2rem);
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        .photo-frame {
+            position: relative;
+            aspect-ratio: 4/3;
+            background: white;
+            padding: clamp(10px, 2vw, 15px);
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(139, 111, 71, 0.3);
+            border: 3px solid #e8c4a8;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .photo-frame:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .photo-frame:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .photo-frame:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .photo-frame:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .photo-frame:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .photo-frame:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .photo-frame:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 50px rgba(139, 111, 71, 0.5),
+                0 0 30px rgba(212, 165, 116, 0.4);
+            border-color: #d4a574;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: clamp(0.75rem, 2vw, 1rem);
+                padding: clamp(0.75rem, 2vw, 1rem);
+            }
+
+            .opening h1 {
+                font-size: clamp(2rem, 10vw, 3rem);
+            }
+
+            .opening p {
+                font-size: clamp(1.1rem, 4vw, 1.4rem);
+            }
+
+            .cake {
+                width: clamp(180px, 50vw, 250px);
+                height: clamp(220px, 60vw, 300px);
+            }
+
+            .letter-container {
+                width: 92vw;
+                max-height: 80vh;
+                max-height: 80dvh;
+                padding: clamp(1.25rem, 4vw, 2rem);
+                border-radius: 12px;
+            }
+
+            .letter-container h2 {
+                font-size: clamp(1.3rem, 5vw, 1.8rem);
+            }
+
+            .letter-container p {
+                font-size: clamp(0.95rem, 3vw, 1.1rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-container {
+                margin-top: 2950px;
+            }
+
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cake {
+                width: 70vw;
+                height: 80vw;
+                max-width: 220px;
+                max-height: 270px;
+            }
+
+            .candle-group {
+                gap: 12px;
+            }
+
+            .candle {
+                width: 10px;
+                height: 45px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .slide {
+                padding: 1rem;
+                justify-content: flex-start;
+                padding-top: 2rem;
+            }
+
+            .cake-container {
+                gap: 1.5rem;
+            }
+
+            .opening {
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-height: 600px) and (max-width: 768px) {
+            .cake {
+                width: 50vw;
+                height: 55vw;
+                max-width: 180px;
+                max-height: 220px;
+            }
+
+            .opening h1 {
+                font-size: 1.8rem;
+            }
+
+            .letter-container {
+                max-height: 75vh;
+                max-height: 75dvh;
+            }
+        }
+
+        /* Scrollbar styling for letter */
+        .letter-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .letter-container::-webkit-scrollbar-track {
+            background: #f9e4d0;
+            border-radius: 10px;
+        }
+
+        .letter-container::-webkit-scrollbar-thumb {
+            background: #d4a574;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SLIDE 1: Opening -->
+    <div class="slide active" id="slide1">
+        <div class="opening">
+            <h1>Barakallahh fii Umrikk</h1>
+            <p>Untuk Kanjeng Syari Tercinta ✨</p>
+            <div class="tap-instruction">ketuk di mana saja untuk melanjutkan</div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: Cake -->
+    <div class="slide" id="slide2">
+        <div class="cake-container">
+            <div class="cake">
+                <div class="cake-layer layer-1"></div>
+                <div class="cake-layer layer-2"></div>
+                <div class="cake-layer layer-3"></div>
+                <div class="candle-group">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="blow-btn" onclick="blowCandles(event)">Tiup Lilinnya 🎂</button>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Gift -->
+    <div class="slide" id="slide3">
+        <div class="gift-scene">
+            <div class="gift-box" onclick="openGift(event)">
+                <div class="box-lid">
+                    <div class="bow"></div>
+                </div>
+                <div class="box-base">
+                    <div class="ribbon-v"></div>
+                    <div class="ribbon-h"></div>
+                </div>
+            </div>
+            <p class="gift-instruction">ketuk untuk membuka hadiah</p>
+        </div>
+        <div class="letter-container" id="letter">
+            <div class="letter-bouquet">🌹</div>
+            <h2>Untuk Kanjeng Tercinta ✨</h2>
+            <p>Di hari istimewa ini, aku mau ngucapin selamat ulang tahun buat Umi tersayang 🤍 Terima kasih untuk semua
+                doa, perhatian, dan kasih sayang Umi yang nggak pernah habis, bahkan di saat aku mungkin nggak selalu
+                bisa membalasnya dengan sempurna (ciee). </p>
+            <p>Umi itu rumah paling hangat buat aku. Sosok yang selalu ada di belakang setiap langkah aku, yang
+                diam-diam mendoakan, menguatkan, dan percaya sama aku tanpa banyak syarat. Kasih sayang Umi adalah
+                hadiah paling berharga yang aku punya.</p>
+            <p>Semoga di umur Umi yang sekarang ini, Allah selalu memberikan kesehatan, kebahagiaan, dan umur panjang
+                yang penuh berkah. Semoga hati Umi selalu tenang, rezekinya lancar, dan setiap hari dipenuhi hal-hal
+                yang bikin Umi tersenyum.</p>
+            <p>Semoga Umi makin bahagia, makin sering senyum, makin semangat ngejalanin hari-harinya. Dan tentunya…
+                semoga Umi makin suka nraktir anak-anaknya 😄 Semangat juga buat dietnya, pelan-pelan yang penting sehat
+                dan happy.</p>
+            <p class="letter-signature">— dengan cinta dan doa,<br>4 Brothers💛</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: Photo Gallery -->
+    <div class="slide" id="slide4">
+        <div class="gallery-container">
+            <h2 class="gallery-title">Love You Kanjeng Umi ❤️</h2>
+            <div class="photo-grid">
+                <div class="photo-frame">
+                    <img src="foto/umi fathur 3.jpeg" alt="Kenangan 1">
+                </div>
+                <div style="object-position: top;" class="photo-frame">
+                    <img src="foto/azri umi 2.jpeg" alt="Kenangan 2">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/bareng ajam fatih azri.jpeg" alt="Kenangan 3">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/umi fatih 2.jpeg" alt="Kenangan 4">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/umi sendiri.jpeg" alt="Kenangan 5">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/fathur umi fatih.jpeg" alt="Kenangan 6">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/umi faih ajam azri 2.jpeg" alt="Kenangan 6">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/umi abi.jpeg" alt="Kenangan 6">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/full squad.jpeg" alt="Kenangan 6">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/umi fathur 2.jpeg" alt="Kenangan 6">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/umi ajam.jpeg" alt="Kenangan 6">
+                </div>
+                <div class="photo-frame">
+                    <img src="foto/azri_umi.jpeg" alt="Kenangan 6">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        let canAdvance = true;
+        let candlesBlown = false;
+        let giftOpened = false;
+
+        // Next slide function
+        function nextSlide() {
+            if (!canAdvance) return;
+
+            // Special conditions for slide 2 and 3
+            if (currentSlide === 2 && !candlesBlown) return;
+            if (currentSlide === 3 && !giftOpened) return;
+
+            if (currentSlide < 4) {
+                canAdvance = false;
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+
+                setTimeout(() => {
+                    canAdvance = true;
+                }, 1200);
+            }
+        }
+
+        // Blow candles function
+        function blowCandles(e) {
+            e.stopPropagation();
+            const flames = document.querySelectorAll('.flame');
+            flames.forEach((flame, i) => {
+                setTimeout(() => {
+                    flame.classList.add('blown');
+                }, i * 150);
+            });
+
+            setTimeout(() => {
+                candlesBlown = true;
+                e.target.textContent = 'Lanjutkan →';
+                e.target.onclick = (e) => {
+                    e.stopPropagation();
+                    nextSlide();
+                };
+            }, 800);
+        }
+
+        // Open gift function
+        function openGift(e) {
+            e.stopPropagation();
+            const lid = document.querySelector('.box-lid');
+            const letter = document.getElementById('letter');
+
+            lid.classList.add('opened');
+
+            // Create confetti
+            for (let i = 0; i < 40; i++) {
+                createConfetti();
+            }
+
+            setTimeout(() => {
+                letter.classList.add('show');
+                giftOpened = true;
+            }, 600);
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+
+            const colors = ['#d4a574', '#e8c4a8', '#f4d5b8', '#c9a86a', '#fff5eb'];
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+            const startX = window.innerWidth / 2;
+            const startY = window.innerHeight / 2;
+
+            confetti.style.left = startX + 'px';
+            confetti.style.top = startY + 'px';
+
+            document.body.appendChild(confetti);
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 100 + Math.random() * 200;
+            const endX = startX + Math.cos(angle) * velocity;
+            const endY = startY + Math.sin(angle) * velocity + 300;
+
+            const animation = confetti.animate([
+                {
+                    transform: 'translate(0, 0) rotate(0deg)',
+                    opacity: 1
+                },
+                {
+                    transform: `translate(${endX - startX}px, ${endY - startY}px) rotate(${Math.random() * 720}deg)`,
+                    opacity: 0
+                }
+            ], {
+                duration: 1500 + Math.random() * 1000,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+
+            animation.onfinish = () => confetti.remove();
+        }
+
+        // Click anywhere to advance (except on buttons and interactive elements)
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.blow-btn') &&
+                !e.target.closest('.gift-box') &&
+                !e.target.closest('.letter-container')) {
+                nextSlide();
+            }
+        });
+
+        // Prevent letter scroll from triggering slide advance
+        document.getElementById('letter').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+
+</html>
